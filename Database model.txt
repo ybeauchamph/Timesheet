@@ -1,0 +1,36 @@
+Employee
+======================
+id           | auto
+number       | string
+alias        | string
+name         | string
+weeklyHours  | decimal
+annualLeave  | int
+
+Product
+======================
+id           | auto
+name         | string
+
+Client
+======================
+id           | auto
+alias        | string
+name         | string
+
+Project
+======================
+id           | auto
+name         | string
+productId    | fk
+clientId     | fk
+
+TaskType
+=============================
+id                  | auto
+name                | string
+tech                | bool
+researchDevelopment | bool
+holiday             | bool
+statutoryHoliday    | bool
+
