@@ -1,0 +1,27 @@
+{
+  "name": "@nmd-timesheet/model",
+  "version": "1.0.0",
+  "description": "Object model for objects transfer between Nomadis Timesheet web and api",
+  "main": "dist/model",
+  "scripts": {
+    "build": "npm-run-all clean compile",
+    "clean": "shx rm -rf ./dist",
+    "compile": "tsc --pretty",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npm-run-all clean watch:ts",
+    "watch:ts": "tsc --watch --pretty",
+    "start": "npm run watch"
+  },
+  "author": "Yannick Beauchamp-H <https://github.com/Zihark17>",
+  "license": "Apache-2.0",
+  "private": true,
+  "devDependencies": {
+    "npm-run-all": "^4.0.2",
+    "shx": "^0.2.2",
+    "tslint": "^5.2.0",
+    "typescript": "^2.5.0"
+  },
+  "dependencies": {
+    "@nmd-timesheet/common": "file:../common"
+  }
+}

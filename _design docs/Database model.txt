@@ -4,6 +4,7 @@ id           | auto
 number       | string
 alias        | string
 name         | string
+password     | string
 weeklyHours  | decimal
 annualLeave  | int
 
@@ -34,3 +35,12 @@ researchDevelopment | bool
 holiday             | bool
 statutoryHoliday    | bool
 
+TimeData
+======================
+id                  |
+startDate           | date
+endDate             | date
+employeeId          | fk
+projectId           | fk null
+clientId            | fk null
+productId           | fk null
