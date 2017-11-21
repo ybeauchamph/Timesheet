@@ -89,11 +89,8 @@ export abstract class Api {
                 controller = this.container.get(controllerClass);
             } catch (ex) {
                 console.error(
-                    '%s is not a Controller, the Controller decorator must be added.\r\n' +
-                    '  Example:\r\n' +
-                    '  @Controller()\r\n' +
-                    '  export class %s { ... }',
-                    controllerClass.name, controllerClass.name);
+                    '%s is not a Controller, the Controller decorator must be added OR the class must extends ApiController.',
+                    controllerClass.name);
                 continue;
             }
 

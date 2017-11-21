@@ -1,5 +1,7 @@
+import { injectable } from 'inversify';
 import { HttpMessage } from './http-message';
 
+@injectable()
 export abstract class ApiController {
     ok(body?: any): HttpMessage {
         return new HttpMessage(200, body);

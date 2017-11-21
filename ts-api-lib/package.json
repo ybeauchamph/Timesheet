@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Web API library based on restify for Typescript",
   "main": "dist/ts-api-lib.js",
-  "typings": "src/ts-api-lib",
+  "typings": "dist/ts-api-lib.d.ts",
   "scripts": {
     "build": "npm-run-all clean compile",
     "clean": "shx rm -rf ./dist",

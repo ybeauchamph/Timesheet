@@ -2,7 +2,8 @@
   "name": "@nmd-timesheet/model",
   "version": "1.0.0",
   "description": "Object model for objects transfer between Nomadis Timesheet web and api",
-  "main": "dist/model",
+  "main": "dist/model.js",
+  "typings": "dist/model.d.ts",
   "scripts": {
     "build": "npm-run-all clean compile",
     "clean": "shx rm -rf ./dist",

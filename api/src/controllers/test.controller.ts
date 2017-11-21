@@ -1,16 +1,16 @@
 import { Request } from 'restify';
-import { Controller, HttpGet } from '@nmd-timesheet/ts-api-lib';
+import { Controller, HttpGet, ApiController, HttpMessage } from '@nmd-timesheet/ts-api-lib';
 
 @Controller('test')
-export class TestController {
+export class TestController extends ApiController {
     @HttpGet('~/hello/:name')
-    hello(req: Request) {
+    hello(req: Request): HttpMessage {
         console.log(arguments);
-        return 'Hello ' + req.params.name;
+        return this.ok('Hello ' + req.params.name);
     }
 
     @HttpGet('')
-    test(req: Request) {
-        return 'Test';
+    test(req: Request): HttpMessage {
+        return this.ok('Test');
     }
 }

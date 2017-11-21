@@ -2,7 +2,8 @@
   "name": "@nmd-timesheet/common",
   "version": "1.0.0",
   "description": "Shared code between Nomadis Timesheet web and api",
-  "main": "dist/common",
+  "main": "dist/common.js",
+  "typing": "dist/common.d.ts",
   "scripts": {
     "build": "npm-run-all clean compile",
     "clean": "shx rm -rf ./dist",
