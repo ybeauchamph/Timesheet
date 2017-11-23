@@ -16,11 +16,11 @@
         "rootDir": "src/",
         "lib": ["es6", "es2016", "dom"]
     },
-    "files": [
-        "src/api.ts"
+    "include": [
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules",
-		"dist"
+		    "dist"
     ]
 }

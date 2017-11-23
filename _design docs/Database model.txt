@@ -5,8 +5,8 @@ number       | string
 alias        | string
 name         | string
 password     | string
-weeklyHours  | decimal
-annualLeave  | int
+weeklyHours  | decimal * Extract to table
+annualLeave  | int     * Extract to table
 
 Product
 ======================
