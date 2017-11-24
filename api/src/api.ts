@@ -21,6 +21,29 @@ import {
 
 require('source-map-support').install();
 
+class TimesheetApi extends Api {
+    constructor(apiConfig: ApiConfig) {
+        super(apiConfig);
+    }
+
+    onInit(): void {
+
+    }
+
+    onStarted(): void {
+
+    }
+
+    onDestroy(): void {
+
+    }
+}
+
+// TODO Use this event to safely dispose of resources
+process.on('exit', () => {
+    console.log('Exit!');
+});
+
 (async function () {
     const config = new Config<IConfig>('./config.json');
     if (!config.load()) {
@@ -33,9 +56,10 @@ require('source-map-support').install();
         dbConnection = await createConnection({
             type: 'mssql',
             host: 'localhost',
-            port: 4694,
-            username: 'admin',
+            port: 1433,
+            username: 'NomadisTimesheet_backend',
             database: 'NomadisTimesheet',
+            synchronize: true,
             entities: [
                 ClientEntity,
                 EmployeeEntity,
@@ -48,24 +72,6 @@ require('source-map-support').install();
     } catch (ex) {
         console.error('Failed to create connection to database %s at %s:%s\r\n', 'NomadisTimesheet', 'localhost', 4694, ex);
         return;
-    }
-
-    class TimesheetApi extends Api {
-        constructor(apiConfig: ApiConfig) {
-            super(apiConfig);
-        }
-
-        onInit(): void {
-
-        }
-
-        onStarted(): void {
-
-        }
-
-        onDestroy(): void {
-
-        }
     }
 
     const container = new Container();
