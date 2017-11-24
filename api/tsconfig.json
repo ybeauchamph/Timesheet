@@ -6,7 +6,7 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "declaration": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "module": "commonjs",

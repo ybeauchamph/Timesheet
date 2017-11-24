@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ProjectEntity } from './project';
 import { TimeDataEntity } from './time-data';
 
-@Entity()
+@Entity('Client')
 export class ClientEntity {
     @PrimaryGeneratedColumn()
     id: number;

@@ -4,7 +4,7 @@ import { EmployeeEntity } from './employee';
 import { ProductEntity } from './product';
 import { ProjectEntity } from './project';
 
-@Entity()
+@Entity('TimeData')
 export class TimeDataEntity {
     @PrimaryGeneratedColumn()
     id: number;

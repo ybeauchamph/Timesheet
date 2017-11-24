@@ -3,7 +3,7 @@ import { ClientEntity } from './client';
 import { ProductEntity } from './product';
 import { TimeDataEntity } from './time-data';
 
-@Entity()
+@Entity('Project')
 export class ProjectEntity {
     @PrimaryGeneratedColumn()
     id: number;
