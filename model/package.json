@@ -1,7 +1,7 @@
 {
   "name": "@nmd-timesheet/model",
   "version": "1.0.0",
-  "description": "Object model for objects transfer between Nomadis Timesheet web and api",
+  "description": "Object model for objects transfer between Timesheet web and api",
   "main": "dist/model.js",
   "typings": "dist/model.d.ts",
   "scripts": {

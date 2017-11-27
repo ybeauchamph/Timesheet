@@ -64,7 +64,7 @@ class TimesheetApi extends Api {
     }
 
     new TimesheetApi({
-        Name: 'Nomadis Timesheet API',
+        Name: 'Timesheet API',
         Version: '1.0.0',
         Port: config.config.port,
         AllowedOrigins: ['localhost:4200', `localhost:${config.config.port}`],

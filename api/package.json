@@ -1,7 +1,7 @@
 {
   "name": "@nmd-timesheet/api",
   "version": "1.0.0",
-  "description": "Nomadis Timesheet API",
+  "description": "Timesheet API",
   "main": "dist/api",
   "scripts": {
     "build": "npm-run-all clean compile",

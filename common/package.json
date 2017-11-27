@@ -1,7 +1,7 @@
 {
   "name": "@nmd-timesheet/common",
   "version": "1.0.0",
-  "description": "Shared code between Nomadis Timesheet web and api",
+  "description": "Shared code between Timesheet web and api",
   "main": "dist/common.js",
   "typing": "dist/common.d.ts",
   "scripts": {
