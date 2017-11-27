@@ -2,10 +2,24 @@ import { Request } from 'restify';
 import * as _ from 'lodash';
 
 import { ApiController, Controller, HttpPost, HttpMessage } from '@nmd-timesheet/ts-api-lib';
-import { AuthenticationRequest, AuthenticationError, AuthenticationErrorCode } from '@nmd-timesheet/model';
+import { AuthenticationRequest, AuthenticationResponse, AuthenticationError, AuthenticationErrorCode } from '@nmd-timesheet/model';
+
+import {
+    CryptoService,
+    EmployeeService,
+    TokenService
+} from '../services';
 
 @Controller('token')
 export class AuthenticationController extends ApiController {
+    constructor(
+        private cryptoService: CryptoService,
+        private employeeService: EmployeeService,
+        private tokenService: TokenService
+    ) {
+        super();
+    }
+
     @HttpPost('')
     authenticate(req: Request) {
         const authenticationRequest = req.body as AuthenticationRequest;
@@ -24,11 +38,26 @@ export class AuthenticationController extends ApiController {
         }
     }
 
-    private authenticatePassword(scope: string, username: string, password: string) {
+    private async authenticatePassword(scope: string, username: string, password: string): Promise<HttpMessage> {
         if (!_.isString(username) || !_.isString(password)) {
             return this.authenticationError(AuthenticationErrorCode.invalid_request);
         } else {
-            return this.ok('Auth response');
+            const employee = await this.employeeService.getByEmail(username);
+            if (!employee) {
+                return this.authenticationError(AuthenticationErrorCode.invalid_client);
+            }
+
+            const hashedPassword = this.cryptoService.hash(password, employee.salt);
+            if (employee.password !== hashedPassword) {
+                return this.authenticationError(AuthenticationErrorCode.invalid_client);
+            }
+
+            const strToken = this.tokenService.createEmployeeToken(employee);
+            return this.ok(<AuthenticationResponse>{
+                TokenType: 'Bearer',
+                AccessToken: strToken,
+                RefreshToken: null
+            });
         }
     }
 

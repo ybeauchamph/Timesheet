@@ -6,6 +6,9 @@ export class EmployeeEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ length: 254 })
+    email: string;
+
     @Column()
     number: number;
 
@@ -15,7 +18,10 @@ export class EmployeeEntity {
     @Column({ length: 200 })
     name: string;
 
-    @Column({ length: 256 })
+    @Column({ length: 64 })
+    salt: string;
+
+    @Column({ length: 128 })
     password: string;
 
     @OneToMany(() => TimeDataEntity, timeData => timeData.employee)

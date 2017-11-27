@@ -13,22 +13,20 @@ export abstract class Api {
     private __apiConfig: ApiConfig;
     private __server: Server;
     private __started: boolean;
+    private __container: Container;
 
     constructor(apiConfig: ApiConfig) {
         this.__apiConfig = apiConfig;
-
-        this.initServer();
-        this.onInit();
-        this.registerControllersRoutes();
+        this.__container = new Container();
     }
 
     abstract onInit(): void;
     abstract onStarted(): void;
     abstract onDestroy(): void;
 
-    public get apiConfig(): ApiConfig { return this.__apiConfig; }
-    public get server(): Server { return this.__server; }
-    public get container(): Container { return this.apiConfig.Container; }
+    get apiConfig(): ApiConfig { return this.__apiConfig; }
+    get server(): Server { return this.__server; }
+    get container(): Container { return this.__container; }
 
     private initServer() {
         const serverOptions: ServerOptions = {
@@ -57,11 +55,15 @@ export abstract class Api {
                 this.server.close();
             }
             this.onDestroy();
-            console.log('Exit');
+            process.exit();
         });
     }
 
     run(): void {
+        this.initServer();
+        this.onInit();
+        this.registerControllersRoutes();
+
         this.__started = true;
         this.server.listen(this.apiConfig.Port, () => {
             console.log('\r\n%s listening at %s\r\n', this.server.name, this.server.url);

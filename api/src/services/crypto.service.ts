@@ -2,7 +2,7 @@ import { injectable } from 'inversify';
 import * as crypto from 'crypto';
 
 @injectable()
-export class AuthenticationService {
+export class CryptoService {
     generateRandomString(length: number): string {
         return crypto.randomBytes(Math.ceil(length / 2))
             .toString('hex')
@@ -15,5 +15,5 @@ export class AuthenticationService {
             .createHmac(algorithm, salt)
             .update(value)
             .digest('hex');
-    };
+    }
 }

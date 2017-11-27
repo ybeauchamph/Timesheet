@@ -6,5 +6,4 @@ export interface ApiConfig {
     AllowedOrigins: Array<string>;
     Port: number;
     Controllers: Array<{ new(...args: Array<any>): Object; }>;
-    Container: Container;
 }

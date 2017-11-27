@@ -1,33 +1,31 @@
 // *** Import Reflect Metadata only once ***
 import 'reflect-metadata';
-import { Container } from 'inversify';
 import { Connection, EntityManager, createConnection } from 'typeorm';
 
 import { Api, ApiConfig, Config } from '@nmd-timesheet/ts-api-lib';
 
 import { IConfig } from './config.interface';
-
-import { AuthenticationController } from './controllers/authentication.controller';
-import { TestController }           from './controllers/test.controller';
-
-import {
-    ClientEntity,
-    EmployeeEntity,
-    ProductEntity,
-    ProjectEntity,
-    TaskTypeEntity,
-    TimeDataEntity
-} from './entity';
+import { AppModule } from './app-module';
 
 require('source-map-support').install();
 
 class TimesheetApi extends Api {
-    constructor(apiConfig: ApiConfig) {
+    constructor(
+        apiConfig: ApiConfig,
+        private config: Config<IConfig>,
+        private dbConnection: Connection
+    ) {
         super(apiConfig);
     }
 
     onInit(): void {
+        this.container.bind(Connection).toConstantValue(this.dbConnection);
+        this.container.bind(EntityManager).toConstantValue(this.dbConnection.manager);
+        this.container.bind('IConfig').toConstantValue(this.config.config);
 
+        for (const service of AppModule.Services) {
+            this.container.bind(service).toSelf().inSingletonScope();
+        }
     }
 
     onStarted(): void {
@@ -35,14 +33,10 @@ class TimesheetApi extends Api {
     }
 
     onDestroy(): void {
-
+        this.dbConnection.close();
+        console.log('Closing API');
     }
 }
-
-// TODO Use this event to safely dispose of resources
-process.on('exit', () => {
-    console.log('Exit!');
-});
 
 (async function () {
     const config = new Config<IConfig>('./config.json');
@@ -51,44 +45,31 @@ process.on('exit', () => {
         return;
     }
 
+    const dbConfig = config.config.database;
     let dbConnection: Connection;
     try {
         dbConnection = await createConnection({
             type: 'mssql',
-            host: 'localhost',
-            port: 1433,
-            username: 'NomadisTimesheet_backend',
-            database: 'NomadisTimesheet',
-            synchronize: true,
-            entities: [
-                ClientEntity,
-                EmployeeEntity,
-                ProductEntity,
-                ProjectEntity,
-                TaskTypeEntity,
-                TimeDataEntity
-            ]
+            host: dbConfig.host,
+            port: dbConfig.port,
+            username: dbConfig.username,
+            password: dbConfig.password,
+            database: dbConfig.database,
+            synchronize: config.config.debug === true,
+            entities: AppModule.Entities
         });
     } catch (ex) {
-        console.error('Failed to create connection to database %s at %s:%s\r\n', 'NomadisTimesheet', 'localhost', 4694, ex);
+        console.error('Failed to create connection to database %s at %s:%s\r\n', dbConfig.database, dbConfig.host, dbConfig.port, ex);
         return;
     }
-
-    const container = new Container();
-
-    container.bind(Connection).toConstantValue(dbConnection);
-    container.bind(EntityManager).toConstantValue(dbConnection.manager);
-    container.bind(Config).toSelf().inSingletonScope();
 
     new TimesheetApi({
         Name: 'Nomadis Timesheet API',
         Version: '1.0.0',
         Port: config.config.port,
-        AllowedOrigins: ['localhost:4200', 'localhost:4201'],
-        Controllers: [
-            AuthenticationController,
-            TestController
-        ],
-        Container: container
-    }).run();
-})();
+        AllowedOrigins: ['localhost:4200', `localhost:${config.config.port}`],
+        Controllers: AppModule.Controllers,
+    }, config, dbConnection).run();
+})().catch(ex => {
+    console.error('API CRASHED\r\n--------------------------------------------------\r\n', ex);
+});

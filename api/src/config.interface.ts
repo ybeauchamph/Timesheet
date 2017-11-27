@@ -3,5 +3,12 @@ export interface IConfig {
     debug: boolean;
     logRoutes: boolean;
     tokenSecretKey: string;
-    databaseConnectionString: string;
+    tokenExpirationTime: number;
+    database: {
+        host: string;
+        port: number;
+        database: string;
+        username: string;
+        password: string;
+    }
 }
