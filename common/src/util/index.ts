@@ -1,1 +1,1 @@
-export { EmptyConstructor } from './empty-constructor';
+export { Constructor, EmptyConstructor } from './constructor';

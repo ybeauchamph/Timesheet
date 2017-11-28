@@ -1,8 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { sign } from 'jws';
+import { sign, verify, decode } from 'jws';
 
 import { IConfig } from '../config.interface';
 import { EmployeeEntity } from '../entity';
+
+export interface EmployeeToken {
+    sub: number;
+    exp: number;
+    iat: number;
+}
 
 @injectable()
 export class TokenService {
@@ -20,13 +26,27 @@ export class TokenService {
 
         return sign({
             header: { alg: 'HS512' },
-            payload: {
+            payload: <EmployeeToken>{
                 sub: employee.id,
                 exp: this.dateToEpoch(expiration),
                 iat: this.dateToEpoch(new Date)
             },
             secret: this.apiConfig.tokenSecretKey
         });
+    }
+
+    verifyAndDecodeToken(strToken: string): any {
+        if (verify(strToken, 'HS512', this.apiConfig.tokenSecretKey)) {
+            const strPayload = decode(strToken).payload;
+            try {
+                const payload = JSON.parse(strPayload) as EmployeeToken;
+                const expiration = this.epochToDate(payload.exp);
+                if (expiration > new Date()) {
+                    return payload;
+                }
+            } catch (ex) { }
+        }
+        return undefined;
     }
 
     private dateToEpoch(date: Date): number {

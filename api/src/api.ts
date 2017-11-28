@@ -1,11 +1,13 @@
 // *** Import Reflect Metadata only once ***
 import 'reflect-metadata';
 import { Connection, EntityManager, createConnection } from 'typeorm';
+import { decorate, injectable } from 'inversify';
 
 import { Api, ApiConfig, Config } from '@nmd-timesheet/ts-api-lib';
 
 import { IConfig } from './config.interface';
 import { AppModule } from './app-module';
+import { RequestHandler, TokenAuthenticationHandler } from './handler';
 
 require('source-map-support').install();
 
@@ -25,6 +27,17 @@ class TimesheetApi extends Api {
 
         for (const service of AppModule.Services) {
             this.container.bind(service).toSelf().inSingletonScope();
+        }
+
+        for (const handler of AppModule.Handlers) {
+            if (!this.container.isBound(handler)) {
+                this.container.bind(handler).toSelf().inSingletonScope();
+            }
+        }
+
+        for (const handler of AppModule.Handlers) {
+            const handlerInstance = this.container.get<RequestHandler>(handler);
+            this.server.use(handlerInstance.process.bind(handlerInstance));
         }
     }
 

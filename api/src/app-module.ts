@@ -1,3 +1,5 @@
+import { Constructor } from '@nmd-timesheet/common';
+
 import {
     ClientEntity,
     EmployeeEntity,
@@ -17,10 +19,16 @@ import {
     TokenService
 } from './services';
 
+import {
+    RequestHandler,
+    TokenAuthenticationHandler
+} from './handler';
+
 export interface IAppModule {
-    Entities: Array<any>;
-    Controllers: Array<any>;
-    Services: Array<any>;
+    Entities: Array<Constructor<any>>;
+    Handlers: Array<Constructor<RequestHandler>>;
+    Controllers: Array<Constructor<any>>;
+    Services: Array<Constructor<any>>;
 }
 
 export const AppModule: IAppModule = {
@@ -31,6 +39,9 @@ export const AppModule: IAppModule = {
         ProjectEntity,
         TaskTypeEntity,
         TimeDataEntity
+    ],
+    Handlers: [
+        TokenAuthenticationHandler
     ],
     Controllers: [
         AuthenticationController
