@@ -18,9 +18,6 @@ export class EmployeeEntity {
     @Column({ length: 200 })
     name: string;
 
-    @Column({ length: 64 })
-    salt: string;
-
     @Column({ length: 128 })
     password: string;
 

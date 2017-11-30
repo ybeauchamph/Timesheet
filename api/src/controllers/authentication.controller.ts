@@ -47,17 +47,16 @@ export class AuthenticationController extends ApiController {
                 return this.authenticationError(AuthenticationErrorCode.invalid_client);
             }
 
-            const hashedPassword = this.cryptoService.hash(password, employee.salt);
-            if (employee.password !== hashedPassword) {
+            if (this.cryptoService.verifyPassword(employee.password, password)) {
+                const strToken = this.tokenService.createEmployeeToken(employee);
+                return this.ok(<AuthenticationResponse>{
+                    TokenType: 'Bearer',
+                    AccessToken: strToken,
+                    RefreshToken: null
+                });
+            } else {
                 return this.authenticationError(AuthenticationErrorCode.invalid_client);
             }
-
-            const strToken = this.tokenService.createEmployeeToken(employee);
-            return this.ok(<AuthenticationResponse>{
-                TokenType: 'Bearer',
-                AccessToken: strToken,
-                RefreshToken: null
-            });
         }
     }
 

@@ -1,19 +1,22 @@
 import { injectable } from 'inversify';
-import * as crypto from 'crypto';
+import { randomBytes } from 'crypto';
+import { hash, verify, argon2id } from 'argon2';
 
 @injectable()
 export class CryptoService {
     generateRandomString(length: number): string {
-        return crypto.randomBytes(Math.ceil(length / 2))
+        return randomBytes(Math.ceil(length / 2))
             .toString('hex')
             .slice(0, length);
     }
 
-    hash(value: string, salt: string): string {
-        const algorithm = 'sha512';
-        return crypto
-            .createHmac(algorithm, salt)
-            .update(value)
-            .digest('hex');
+    hashPassword(password: string): Promise<string> {
+        return hash(password, {
+            type: argon2id
+        });
+    }
+
+    verifyPassword(hash: string, password: string): Promise<boolean> {
+        return verify(hash, password);
     }
 }
