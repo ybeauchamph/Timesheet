@@ -1,5 +1,5 @@
 {
-  "name": "@nmd-timesheet/ts-api-lib",
+  "name": "ts-api-lib",
   "version": "1.0.0",
   "description": "Web API library based on restify for Typescript",
   "main": "dist/ts-api-lib.js",

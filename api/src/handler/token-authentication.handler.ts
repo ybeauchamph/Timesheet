@@ -1,5 +1,7 @@
-import { Request, Response, Next } from 'restify';
+import { Request } from 'restify';
 import { injectable } from 'inversify';
+
+import { Req, Ctx, Context } from 'ts-api-lib';
 
 import { RequestHandler } from './handler';
 import { TokenService, EmployeeToken } from '../services';
@@ -10,7 +12,7 @@ export class TokenAuthenticationHandler implements RequestHandler {
         private tokenService: TokenService
     ) { }
 
-    process(req: Request, res: Response, next: Next) {
+    process(@Req() req: Request, @Ctx() ctx: Context) {
         let authenticated: boolean = false;
 
         const token = this.getTokenFromHeader(req);
@@ -24,12 +26,9 @@ export class TokenAuthenticationHandler implements RequestHandler {
         }
 
         if (authenticated) {
-            req['authenticated'] = true;
-            req['context'] = {
-                employeeId: payload.sub
-            };
+            ctx.authenticated = true;
+            ctx.userId = payload.sub;
         }
-        next();
     }
 
     private getTokenFromHeader(req: Request): string | undefined {

@@ -1,7 +1,7 @@
 import { Request } from 'restify';
 import * as _ from 'lodash';
 
-import { ApiController, Controller, HttpPost, HttpMessage } from '@nmd-timesheet/ts-api-lib';
+import { ApiController, Controller, HttpPost, HttpMessage, Req } from 'ts-api-lib';
 import { AuthenticationRequest, AuthenticationResponse, AuthenticationError, AuthenticationErrorCode } from '@nmd-timesheet/model';
 
 import {
@@ -21,7 +21,7 @@ export class AuthenticationController extends ApiController {
     }
 
     @HttpPost('')
-    authenticate(req: Request) {
+    authenticate(@Req() req: Request) {
         const authenticationRequest = req.body as AuthenticationRequest;
 
         if (!authenticationRequest) {
@@ -47,7 +47,7 @@ export class AuthenticationController extends ApiController {
                 return this.authenticationError(AuthenticationErrorCode.invalid_client);
             }
 
-            if (this.cryptoService.verifyPassword(employee.password, password)) {
+            if (await this.cryptoService.verifyPassword(employee.password, password) === true) {
                 const strToken = this.tokenService.createEmployeeToken(employee);
                 return this.ok(<AuthenticationResponse>{
                     TokenType: 'Bearer',

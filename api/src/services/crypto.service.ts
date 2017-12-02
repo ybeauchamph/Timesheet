@@ -17,6 +17,7 @@ export class CryptoService {
     }
 
     verifyPassword(hash: string, password: string): Promise<boolean> {
-        return verify(hash, password);
+        return verify(hash, password)
+            .catch(err => false);
     }
 }

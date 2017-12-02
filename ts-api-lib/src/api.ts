@@ -1,4 +1,4 @@
-import { createServer, Server, ServerOptions, plugins,Request, Response, Next } from 'restify';
+import { createServer, Server, ServerOptions, plugins, Request, Response, Next, RequestHandler } from 'restify';
 import * as corsMiddleware from 'restify-cors-middleware';
 import { Container } from 'inversify';
 import * as _ from 'lodash';
@@ -8,6 +8,48 @@ import { ApiConfig } from './api-config';
 import { HttpMessage } from './http-message';
 import { HttpMethod } from './http-method.enum';
 import { getControllerRoutes } from './route.decorator';
+import { getParamServiceIdentifiers } from './decorator.factory';
+import { resolveServiceIdentifiers } from './container-util';
+import { Context } from './context';
+
+function handleObservable(observable: Observable<any>, res: Response, next: Next, sendResult: boolean) {
+    if (sendResult) {
+        observable.subscribe(message => {
+            sendResponse(res, message);
+        }, error => {
+            res.send(500, error);
+            next();
+        }, () => {
+            next();
+        });
+    } else {
+        observable.subscribe(null, () => next(), () => next());
+    }
+}
+
+function handlePromise(promise: Promise<any>, res: Response, next: Next, sendResult: boolean) {
+    if (sendResult) {
+        promise.then(message => {
+            sendResponse(res, message);
+            next();
+        }).catch(err => {
+            res.send(500, err);
+            next();
+        });
+    } else {
+        promise.then(() => next()).catch(() => next());
+    }
+}
+
+function sendResponse(res: Response, message: any) {
+    if (message instanceof HttpMessage) {
+        res.send(message.status, message.body);
+    } else if (message) {
+        res.send(200, message);
+    } else {
+        res.send(404);
+    }
+}
 
 export abstract class Api {
     private __apiConfig: ApiConfig;
@@ -49,6 +91,17 @@ export abstract class Api {
         this.server.use(plugins.acceptParser(this.server.acceptable));
         this.server.use(plugins.queryParser());
         this.server.use(plugins.bodyParser());
+        this.server.use((req: Request, res: Response, next: Next) => {
+            const container = new Container();
+            container.bind(Container).toConstantValue(container);
+            container.bind("Request").toConstantValue(req);
+            container.bind('Context').toConstantValue(<Context>{
+                authenticated: false,
+                userId: undefined
+            });
+            (<any>req)['req-container'] = container;
+            next();
+        });
 
         process.on('SIGINT', () => {
             if (this.__started) {
@@ -109,16 +162,16 @@ export abstract class Api {
                 console.log('%s %s', _.padStart(route.method.toString(), 6), route.route);
                 switch (route.method) {
                     case HttpMethod.get:
-                        this.server.get(route.route, this.createRouteHandler(controller, route.propertyKey));
+                        this.server.get(route.route, this.createHandler(controller, route.propertyKey, true));
                         break;
                     case HttpMethod.post:
-                        this.server.post(route.route, this.createRouteHandler(controller, route.propertyKey));
+                        this.server.post(route.route, this.createHandler(controller, route.propertyKey, true));
                         break;
                     case HttpMethod.put:
-                        this.server.put(route.route, this.createRouteHandler(controller, route.propertyKey));
+                        this.server.put(route.route, this.createHandler(controller, route.propertyKey, true));
                         break;
                     case HttpMethod.delete:
-                        this.server.del(route.route, this.createRouteHandler(controller, route.propertyKey));
+                        this.server.del(route.route, this.createHandler(controller, route.propertyKey, true));
                         break;
                     default:
                         console.warn('Unknown route method %s', route.method);
@@ -130,53 +183,29 @@ export abstract class Api {
         console.groupEnd();
     }
 
-    private createRouteHandler(controller: any, property: string | symbol) {
+    createHandler(object: Object, property: string | symbol | RequestHandler, sendResult: boolean) {
         return function (req: Request, res: Response, next: Next) {
             try {
-                const result = (controller[property]).apply(controller, [req]);
+                const params = resolveServiceIdentifiers((<any>req)['req-container'] as Container, getParamServiceIdentifiers(object, property));
+
+                const fn = typeof property === 'function' ? property : (<any>object)[property];
+                const result = fn.apply(object, params);
                 if (result instanceof Observable) {
-                    handleObservable(result, res, next);
+                    handleObservable(result, res, next, sendResult);
                 } else if (Promise.resolve(result) === result) {
-                    handlePromise(result, res, next);
+                    handlePromise(result, res, next, sendResult);
                 } else {
-                    sendResponse(res, result);
+                    if (sendResult) {
+                        sendResponse(res, result);
+                    }
                     next();
                 }
             } catch (ex) {
                 console.error(ex);
-                res.send(500, ex.toString());
-                next();
-            }
-
-            function handleObservable(observable: Observable<any>, res: Response, next: Next) {
-                observable.subscribe(message => {
-                    sendResponse(res, message);
-                }, error => {
-                    res.send(500, error);
-                    next();
-                }, () => {
-                    next();
-                });
-            }
-
-            function handlePromise(promise: Promise<any>, res: Response, next: Next) {
-                promise.then(message => {
-                    sendResponse(res, message);
-                    next();
-                }, rejected => {
-                    res.send(500, rejected);
-                    next();
-                });
-            }
-
-            function sendResponse(res: Response, message: any) {
-                if (message instanceof HttpMessage) {
-                    res.send(message.status, message.body);
-                } else if (message) {
-                    res.send(200, message);
-                } else {
-                    res.send(404);
-                }
+                try {
+                    res.send(500, ex.toString());
+                } catch (ex2) { }
+                next(false);
             }
         }
     }
