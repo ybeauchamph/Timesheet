@@ -16,4 +16,10 @@ export class EmployeeService {
     getByEmail(email: string): Promise<EmployeeEntity> {
         return this.entityManager.findOne(EmployeeEntity, { email: email });
     }
+
+    save(employee: EmployeeEntity): Promise<boolean> {
+        return this.entityManager.save(employee)
+            .then(() => true)
+            .catch(() => false);
+    }
 }

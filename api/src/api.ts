@@ -36,7 +36,7 @@ class TimesheetApi extends Api {
 
         for (const handler of AppModule.Handlers) {
             const handlerInstance = this.container.get<RequestHandler>(handler);
-            this.server.use(this.createHandler(handlerInstance, handlerInstance.process, false));
+            this.server.use(this.createHandler(handlerInstance, handlerInstance.process));
         }
     }
 

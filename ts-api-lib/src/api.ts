@@ -12,33 +12,25 @@ import { getParamServiceIdentifiers } from './decorator.factory';
 import { resolveServiceIdentifiers } from './container-util';
 import { Context } from './context';
 
-function handleObservable(observable: Observable<any>, res: Response, next: Next, sendResult: boolean) {
-    if (sendResult) {
-        observable.subscribe(message => {
-            sendResponse(res, message);
-        }, error => {
-            res.send(500, error);
-            next();
-        }, () => {
-            next();
-        });
-    } else {
-        observable.subscribe(null, () => next(), () => next());
-    }
+function handleObservable(observable: Observable<any>, res: Response, next: Next) {
+    observable.subscribe(message => {
+        sendResponse(res, message);
+    }, error => {
+        res.send(500, error);
+        next();
+    }, () => {
+        next();
+    });
 }
 
-function handlePromise(promise: Promise<any>, res: Response, next: Next, sendResult: boolean) {
-    if (sendResult) {
-        promise.then(message => {
-            sendResponse(res, message);
-            next();
-        }).catch(err => {
-            res.send(500, err);
-            next();
-        });
-    } else {
-        promise.then(() => next()).catch(() => next());
-    }
+function handlePromise(promise: Promise<any>, res: Response, next: Next) {
+    promise.then(message => {
+        sendResponse(res, message);
+        next();
+    }).catch(err => {
+        res.send(500, err);
+        next();
+    });
 }
 
 function sendResponse(res: Response, message: any) {
@@ -49,6 +41,57 @@ function sendResponse(res: Response, message: any) {
     } else {
         res.send(404);
     }
+}
+
+function handleRouteResult(result: any, res: Response, next: Next) {
+    if (result instanceof Observable) {
+        handleObservable(result, res, next);
+    } else if (Promise.resolve(result) === result) {
+        handlePromise(result, res, next);
+    } else {
+        sendResponse(res, result);
+        next();
+    }
+}
+
+function handleHandlerResult(result: any, res: Response, next: Next) {
+    if (result instanceof Observable) {
+        result.subscribe(null, () => next(), () => next());
+    } else if (Promise.resolve(result) === result) {
+        (result as Promise<any>).then(() => next()).catch(() => next());
+    } else {
+        next();
+    }
+}
+
+function handleError(error: any, res: Response, next: Next) {
+    console.error(error);
+    res.send(500, error !== undefined && error !== null ? error.toString() : undefined);
+    next(false);
+}
+
+function createRequestHandler(
+    object: Object,
+    property: string | symbol | RequestHandler,
+    handleResultFn: (result: any, res: Response, next: Next) => void,
+    allowAnonymous: boolean
+) {
+    return function (req: Request, res: Response, next: Next) {
+        try {
+            const container = (<any>req)['req-container'] as Container;
+            if (allowAnonymous !== true && container.get<Context>("Context").authenticated !== true) {
+                res.send(401, null, { "WWW-Authenticate": "Bearer" });
+                next(false);
+            } else {
+                const params = resolveServiceIdentifiers(container, getParamServiceIdentifiers(object, property));
+                const fn = typeof property === 'function' ? property : (<any>object)[property];
+                const result = fn.apply(object, params);
+                handleResultFn(result, res, next);
+            }
+        } catch (ex) {
+            handleError(ex, res, next);
+        }
+    };
 }
 
 export abstract class Api {
@@ -63,11 +106,15 @@ export abstract class Api {
     }
 
     abstract onInit(): void;
+
     abstract onStarted(): void;
+
     abstract onDestroy(): void;
 
     get apiConfig(): ApiConfig { return this.__apiConfig; }
+
     get server(): Server { return this.__server; }
+
     get container(): Container { return this.__container; }
 
     private initServer() {
@@ -94,7 +141,7 @@ export abstract class Api {
         this.server.use((req: Request, res: Response, next: Next) => {
             const container = new Container();
             container.bind(Container).toConstantValue(container);
-            container.bind("Request").toConstantValue(req);
+            container.bind('Request').toConstantValue(req);
             container.bind('Context').toConstantValue(<Context>{
                 authenticated: false,
                 userId: undefined
@@ -162,16 +209,16 @@ export abstract class Api {
                 console.log('%s %s', _.padStart(route.method.toString(), 6), route.route);
                 switch (route.method) {
                     case HttpMethod.get:
-                        this.server.get(route.route, this.createHandler(controller, route.propertyKey, true));
+                        this.server.get(route.route, this.createRouteHandler(controller, route.propertyKey, route.allowAnonymous));
                         break;
                     case HttpMethod.post:
-                        this.server.post(route.route, this.createHandler(controller, route.propertyKey, true));
+                        this.server.post(route.route, this.createRouteHandler(controller, route.propertyKey, route.allowAnonymous));
                         break;
                     case HttpMethod.put:
-                        this.server.put(route.route, this.createHandler(controller, route.propertyKey, true));
+                        this.server.put(route.route, this.createRouteHandler(controller, route.propertyKey, route.allowAnonymous));
                         break;
                     case HttpMethod.delete:
-                        this.server.del(route.route, this.createHandler(controller, route.propertyKey, true));
+                        this.server.del(route.route, this.createRouteHandler(controller, route.propertyKey, route.allowAnonymous));
                         break;
                     default:
                         console.warn('Unknown route method %s', route.method);
@@ -183,30 +230,11 @@ export abstract class Api {
         console.groupEnd();
     }
 
-    createHandler(object: Object, property: string | symbol | RequestHandler, sendResult: boolean) {
-        return function (req: Request, res: Response, next: Next) {
-            try {
-                const params = resolveServiceIdentifiers((<any>req)['req-container'] as Container, getParamServiceIdentifiers(object, property));
+    private createRouteHandler(object: Object, property: string | symbol | RequestHandler, allowAnonymous: boolean) {
+        return createRequestHandler(object, property, handleRouteResult, allowAnonymous);
+    }
 
-                const fn = typeof property === 'function' ? property : (<any>object)[property];
-                const result = fn.apply(object, params);
-                if (result instanceof Observable) {
-                    handleObservable(result, res, next, sendResult);
-                } else if (Promise.resolve(result) === result) {
-                    handlePromise(result, res, next, sendResult);
-                } else {
-                    if (sendResult) {
-                        sendResponse(res, result);
-                    }
-                    next();
-                }
-            } catch (ex) {
-                console.error(ex);
-                try {
-                    res.send(500, ex.toString());
-                } catch (ex2) { }
-                next(false);
-            }
-        }
+    createHandler(object: Object, property: string | symbol | RequestHandler) {
+        return createRequestHandler(object, property, handleHandlerResult, true);
     }
 }

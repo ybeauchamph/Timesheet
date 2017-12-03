@@ -1,7 +1,7 @@
 import { Request } from 'restify';
 import * as _ from 'lodash';
 
-import { ApiController, Controller, HttpPost, HttpMessage, Req } from 'ts-api-lib';
+import { Controller, HttpPost, HttpPut, HttpMessage, Req } from 'ts-api-lib';
 import { AuthenticationRequest, AuthenticationResponse, AuthenticationError, AuthenticationErrorCode } from '@nmd-timesheet/model';
 
 import {
@@ -10,15 +10,13 @@ import {
     TokenService
 } from '../services';
 
-@Controller('token')
-export class AuthenticationController extends ApiController {
+@Controller('token', true)
+export class AuthenticationController {
     constructor(
         private cryptoService: CryptoService,
         private employeeService: EmployeeService,
         private tokenService: TokenService
-    ) {
-        super();
-    }
+    ) { }
 
     @HttpPost('')
     authenticate(@Req() req: Request) {
@@ -31,10 +29,24 @@ export class AuthenticationController extends ApiController {
                 case 'password':
                     return this.authenticatePassword(authenticationRequest.scope, authenticationRequest.username, authenticationRequest.password);
                 case 'refresh_token':
-                    return this.notImplemented();
+                    return HttpMessage.notImplemented();
                 default:
                     return this.authenticationError(AuthenticationErrorCode.unsupported_grant_type);
             }
+        }
+    }
+
+    @HttpPut('~/employee/:id/password', false)
+    async changePassword(@Req() req: Request) {
+        const emp = await this.employeeService.getById(+req.params['id']);
+        if (!emp) {
+            return HttpMessage.notFound();
+        }
+        emp.password = await this.cryptoService.hashPassword(req.body.password);
+        if (await this.employeeService.save(emp) === true) {
+            return HttpMessage.ok();
+        } else {
+            return HttpMessage.internalServerError();
         }
     }
 
@@ -49,7 +61,7 @@ export class AuthenticationController extends ApiController {
 
             if (await this.cryptoService.verifyPassword(employee.password, password) === true) {
                 const strToken = this.tokenService.createEmployeeToken(employee);
-                return this.ok(<AuthenticationResponse>{
+                return HttpMessage.ok(<AuthenticationResponse>{
                     TokenType: 'Bearer',
                     AccessToken: strToken,
                     RefreshToken: null
@@ -62,6 +74,6 @@ export class AuthenticationController extends ApiController {
 
     private authenticationError(errorCode: AuthenticationErrorCode): HttpMessage {
         const authError: AuthenticationError = { errorCode: errorCode };
-        return this.badRequest(authError);
+        return HttpMessage.badRequest(authError);
     }
 }
