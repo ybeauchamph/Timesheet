@@ -18,7 +18,7 @@ export class EmployeeEntity {
     @Column({ length: 200 })
     name: string;
 
-    @Column({ length: 128 })
+    @Column({ length: 256 })
     password: string;
 
     @OneToMany(() => TimeDataEntity, timeData => timeData.employee)

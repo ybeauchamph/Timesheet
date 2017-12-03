@@ -1,4 +1,4 @@
-import { Constructor } from '@nmd-timesheet/common';
+import { Constructor } from '@timesheet/common';
 
 import {
     ClientEntity,

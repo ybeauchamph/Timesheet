@@ -68,7 +68,8 @@ class TimesheetApi extends Api {
             password: dbConfig.password,
             database: dbConfig.database,
             synchronize: config.config.debug === true,
-            entities: AppModule.Entities
+            entities: AppModule.Entities,
+            logging: ['error']
         });
     } catch (ex) {
         console.error('Failed to create connection to database %s at %s:%s\r\n', dbConfig.database, dbConfig.host, dbConfig.port, ex);

@@ -12,7 +12,8 @@ export class CryptoService {
 
     hashPassword(password: string): Promise<string> {
         return hash(password, {
-            type: argon2id
+            type: argon2id,
+            hashLength: 64
         });
     }
 

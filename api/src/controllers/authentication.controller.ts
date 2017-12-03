@@ -2,7 +2,7 @@ import { Request } from 'restify';
 import * as _ from 'lodash';
 
 import { Controller, HttpPost, HttpPut, HttpMessage, Req } from 'ts-api-lib';
-import { AuthenticationRequest, AuthenticationResponse, AuthenticationError, AuthenticationErrorCode } from '@nmd-timesheet/model';
+import { AuthenticationRequest, AuthenticationResponse, AuthenticationError, AuthenticationErrorCode } from '@timesheet/model';
 
 import {
     CryptoService,

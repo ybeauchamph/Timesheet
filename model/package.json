@@ -1,5 +1,5 @@
 {
-  "name": "@nmd-timesheet/model",
+  "name": "@timesheet/model",
   "version": "1.0.0",
   "description": "Object model for objects transfer between Timesheet web and api",
   "main": "dist/model.js",
@@ -23,6 +23,6 @@
     "typescript": "^2.6.0"
   },
   "dependencies": {
-    "@nmd-timesheet/common": "file:../common"
+    "@timesheet/common": "file:../common"
   }
 }

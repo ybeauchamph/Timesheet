@@ -1,5 +1,5 @@
 {
-  "name": "@nmd-timesheet/api",
+  "name": "@timesheet/api",
   "version": "1.0.0",
   "description": "Timesheet API",
   "main": "dist/api",
@@ -24,9 +24,9 @@
   "license": "Apache-2.0",
   "private": true,
   "dependencies": {
-    "@nmd-timesheet/common": "file:../common",
-    "@nmd-timesheet/model": "file:../model",
-    "@nmd-timesheet/ts-api-lib": "file:../ts-api-lib",
+    "@timesheet/common": "file:../common",
+    "@timesheet/model": "file:../model",
+    "@timesheet/ts-api-lib": "file:../ts-api-lib",
     "argon2": "^0.16.2",
     "inversify": "^4.5.1",
     "jws": "^3.1.4",

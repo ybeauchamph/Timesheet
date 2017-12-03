@@ -1,5 +1,5 @@
 {
-  "name": "@nmd-timesheet/common",
+  "name": "@timesheet/common",
   "version": "1.0.0",
   "description": "Shared code between Timesheet web and api",
   "main": "dist/common.js",
