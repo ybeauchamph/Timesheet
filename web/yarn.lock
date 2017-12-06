@@ -32,9 +32,9 @@
   dependencies:
     tslib "^1.7.1"
 
-"@angular/cdk@^5.0.0-rc.2":
-  version "5.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-5.0.0-rc.2.tgz#65a76381a0481e92990af4a105cd3bcbc53ee2af"
+"@angular/cdk@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-5.0.0-rc.3.tgz#fde417a85b9453a3989a8c8a6ce6ff896f5783fd"
   dependencies:
     tslib "^1.7.1"
 
@@ -145,9 +145,9 @@
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-5.0.5.tgz#5019bdea93aa8a3c45a83eb521064916dea30e6f"
 
-"@angular/material@^5.0.0-rc.2":
-  version "5.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-5.0.0-rc.2.tgz#c96bb3295787aa84aa3788d776e15611f77a70ed"
+"@angular/material@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-5.0.0-rc.3.tgz#d27b8e5786d2ae0281fbc42806cc275b160627e7"
   dependencies:
     tslib "^1.7.1"
 
@@ -166,6 +166,12 @@
 "@angular/router@^5.0.0":
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-5.0.5.tgz#9bf64480b264fd8cdfa96a6a19bfbc257274525a"
+  dependencies:
+    tslib "^1.7.1"
+
+"@covalent/core@^1.0.0-rc.0":
+  version "1.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@covalent/core/-/core-1.0.0-rc.0.tgz#58e8fcdfdc409d04b8b3fd270c3e87777415403b"
   dependencies:
     tslib "^1.7.1"
 
