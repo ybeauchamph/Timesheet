@@ -1,0 +1,36 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.lt-sm="center start" class="height-full" style="min-height: 300px;">
+    <div fxFlex="0 1 auto" class="login-box">
+        <form #form="ngForm" (submit)="submit()">
+            <mat-card>
+                <mat-card-title class="pad-md text-center bgc-primary tc-primary-contrast">
+                    TIMESHEET
+                </mat-card-title>
+
+                <mat-card-content>
+                    <mat-form-field class="block">
+                        <input
+                            type="email"
+                            matInput
+                            placeholder="Email"
+                            name="Email"
+                            ngModel />
+                    </mat-form-field>
+                    <mat-form-field class="block">
+                        <input
+                            type="password"
+                            matInput
+                            placeholder="Password"
+                            name="Password"
+                            ngModel />
+                    </mat-form-field>
+                </mat-card-content>
+
+                <mat-card-actions>
+                    <button mat-raised-button color="accent" class="block">
+                        LOGIN
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </div>
+</div>

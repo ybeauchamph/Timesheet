@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+
+@mixin theme-color($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+
+    .bgc-primary { background-color: mat-color($primary); }
+    .bgc-accent { background-color: mat-color($accent); }
+    .bgc-warn { background-color: mat-color($warn); }
+
+    .tc-primary { color: mat-color($primary); }
+    .tc-accent { color: mat-color($accent); }
+    .tc-warn { color: mat-color($warn); }
+
+    .tc-primary-contrast { color: mat-color($primary, default-contrast); }
+    .tc-accent-contrast { color: mat-color($accent, default-contrast); }
+    .tc-warn-contrast { color: mat-color($warn, default-contrast); }
+}
