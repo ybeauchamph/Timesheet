@@ -8,7 +8,7 @@ import {
     CryptoService,
     EmployeeService,
     TokenService
-} from '../services';
+} from '../service';
 
 @Controller('token', true)
 export class AuthenticationController {

@@ -11,13 +11,13 @@ import {
 
 import {
     AuthenticationController
-} from './controllers';
+} from './controller';
 
 import {
     CryptoService,
     EmployeeService,
     TokenService
-} from './services';
+} from './service';
 
 import {
     RequestHandler,

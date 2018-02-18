@@ -106,15 +106,11 @@ export abstract class Api {
     }
 
     abstract onInit(): void;
-
     abstract onStarted(): void;
-
     abstract onDestroy(): void;
 
     get apiConfig(): ApiConfig { return this.__apiConfig; }
-
     get server(): Server { return this.__server; }
-
     get container(): Container { return this.__container; }
 
     private initServer() {

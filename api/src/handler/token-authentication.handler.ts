@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 import { Req, Ctx, Context } from 'ts-api-lib';
 
 import { RequestHandler } from './handler';
-import { TokenService, EmployeeToken } from '../services';
+import { TokenService, EmployeeToken } from '../service';
 
 @injectable()
 export class TokenAuthenticationHandler implements RequestHandler {
