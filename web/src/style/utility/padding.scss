@@ -1,0 +1,10 @@
+$paddings: 0, 4px, 8px, 12px, 16px;
+
+@for $i from 0 through (length($paddings) - 1) {
+    $p: nth($paddings, $i + 1);
+    .p#{$i} { padding: $p !important; }
+    .pt#{$i}, .py#{$i} { padding-top: $p !important; }
+    .pb#{$i}, .py#{$i} { padding-bottom: $p !important; }
+    .pl#{$i}, .px#{$i} { padding-left: $p !important; }
+    .pr#{$i}, .px#{$i} { padding-right: $p !important; }
+}

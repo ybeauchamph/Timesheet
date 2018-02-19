@@ -1,0 +1,10 @@
+$margins: 0, 4px, 8px, 12px, 16px;
+
+@for $i from 0 through (length($margins) - 1) {
+    $m: nth($margins, $i + 1);
+    .m#{$i} { margin: $m !important; }
+    .mt#{$i}, .my#{$i} { margin-top: $m !important; }
+    .mb#{$i}, .my#{$i} { margin-bottom: $m !important; }
+    .ml#{$i}, .mx#{$i} { margin-left: $m !important; }
+    .mr#{$i}, .mx#{$i} { margin-right: $m !important; }
+}
