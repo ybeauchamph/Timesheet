@@ -6,27 +6,34 @@
                     Timesheet
                 </mat-card-title>
 
-                <mat-card-content class="mb0">
-                    <mat-form-field class="block">
+                <mat-card-content class="mb0 py0">
+                    <mat-form-field class="block" hideRequiredMarker>
                         <input
                             type="email"
                             matInput
                             placeholder="Email"
                             name="Email"
-                            ngModel />
+                            ngModel
+                            class="text-center"
+                            email
+                            required
+                            maxlength="254" />
                     </mat-form-field>
-                    <mat-form-field class="block">
+                    <mat-form-field class="block" hideRequiredMarker>
                         <input
                             type="password"
                             matInput
                             placeholder="Password"
                             name="Password"
-                            ngModel />
+                            ngModel
+                            class="text-center"
+                            required
+                            minlength="6" />
                     </mat-form-field>
                 </mat-card-content>
 
-                <mat-card-actions>
-                    <button mat-raised-button color="accent" class="block">
+                <mat-card-actions align="end">
+                    <button type="submit" mat-raised-button color="accent" [disabled]="form.invalid || form.form.disabled">
                         LOGIN
                     </button>
                 </mat-card-actions>

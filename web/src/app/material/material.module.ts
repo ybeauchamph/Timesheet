@@ -4,7 +4,8 @@ import {
     MatButtonModule,
     MatCardModule,
     MatInputModule,
-    MatToolbarModule
+    MatToolbarModule,
+    // MAT_FORM_FIELD_DEFAULT_OPTIONS
 } from '@angular/material';
 
 const modules = [
@@ -16,6 +17,9 @@ const modules = [
 
 @NgModule({
     imports: modules,
-    exports: modules
+    exports: modules,
+    providers: [
+        // {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: 'fill'}
+    ]
 })
 export class MaterialModule { }
