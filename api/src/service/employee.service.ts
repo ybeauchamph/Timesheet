@@ -10,7 +10,7 @@ export class EmployeeService {
     ) { }
 
     getById(id: number): Promise<EmployeeEntity> {
-        return this.entityManager.findOneById(EmployeeEntity, id);
+        return this.entityManager.findOne(EmployeeEntity, id);
     }
 
     getByEmail(email: string): Promise<EmployeeEntity> {

@@ -9,10 +9,10 @@ export class TimeDataEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column('datetime2', { precision: 0 })
     startDate: Date;
 
-    @Column()
+    @Column('datetime2', { precision: 0 })
     endDate: Date;
 
     @ManyToOne(() => EmployeeEntity, employee => employee.timeDatas, { nullable: false })

@@ -465,7 +465,7 @@ cli-boxes@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-1.0.0.tgz#4fa917c3e59c94a004cd61f8ee509da651687143"
 
-cli-highlight@^1.1.4:
+cli-highlight@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/cli-highlight/-/cli-highlight-1.2.3.tgz#b200f97ed0e43d24633e89de0f489a48bb87d2bf"
   dependencies:
@@ -2946,13 +2946,13 @@ type-detect@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-1.0.0.tgz#762217cc06db258ec48908a1298e8b95121e8ea2"
 
-typeorm@^0.1.5:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.1.12.tgz#adcd45f302d21ab4d5b02671bfa8c07cea044af7"
+typeorm@^0.2.0-alpha.18:
+  version "0.2.0-alpha.18"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.0-alpha.18.tgz#eb562aa20b9c4d0954e54689d3db06576dcd712c"
   dependencies:
     app-root-path "^2.0.1"
     chalk "^2.0.1"
-    cli-highlight "^1.1.4"
+    cli-highlight "^1.2.2"
     debug "^3.1.0"
     dotenv "^4.0.0"
     glob "^7.1.2"

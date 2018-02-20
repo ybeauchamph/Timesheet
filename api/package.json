@@ -37,7 +37,7 @@
     "rxjs": "^5.5.2",
     "source-map-support": "^0.5.0",
     "ts-api-lib": "file:../ts-api-lib",
-    "typeorm": "^0.1.5"
+    "typeorm": "^0.2.0-alpha.18"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
