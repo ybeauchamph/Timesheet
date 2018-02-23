@@ -1,0 +1,30 @@
+Time data api
+	PUT employee/:employeeId/time-data
+		Body
+			StartDateTime
+			EndDateTime
+			Project nullable
+			Client  nullable
+			Product nullable
+		Return
+		Description
+			Used to add/remove/edit time data of an employee
+			If no project, client or product is sent, clear data for the period
+			Otherwise, shrink, expand, add or delete existing time data to the parameter
+	GET employee/:employeeId/time-data
+		Params
+			start:   datetime      required
+			end:     datetime      required
+			project: Array<number>
+			client:  Array<number>
+			product: Array<number>
+		Return Array
+			startDate
+			endDate
+			projectId nullable
+			clientId  nullable
+			productId nullable
+		Description
+			Query the time data of an employee for a period of time
+			
+Investigate GraphQl
