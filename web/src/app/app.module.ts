@@ -9,6 +9,7 @@ import { CovalentModule } from './covalent';
 
 import { AppRoutingModule } from './app-routing.module';
 import { LoginModule } from './login';
+import { HeaderBarModule } from './header-bar/header-bar.module';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { LoginModule } from './login';
         CovalentModule,
 
         AppRoutingModule,
-        LoginModule
+        LoginModule,
+        HeaderBarModule
     ],
     providers: [],
     bootstrap: [AppComponent]
