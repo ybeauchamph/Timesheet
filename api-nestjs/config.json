@@ -1,0 +1,26 @@
+{
+  "port": 3000,
+  "debug": true,
+  "logRoutes": true,
+  "hash": {
+    "algorithm": "argon2id",
+    "options": {
+      "timeCost": 10,
+      "memoryCost": 17,
+      "parallelism": 4
+    }
+  },
+  "token": {
+    "secretKey": "%-r_N00nXj)h#gopxXa;ASkf,l]Pq-fv)v/?t[#S%^LYMpz2",
+    "tokenExpirationTime": 1200,
+    "algorithm": "HS512"
+  },
+  "database": {
+    "type": "mssql",
+    "host": "localhost",
+    "port": 1433,
+    "database": "NomadisTimesheet",
+    "username": "NomadisTimesheet_backend",
+    "password": "Lix3ESgm4adbcYaXhYxdUJAN"
+  }
+}
