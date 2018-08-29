@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
+
 import { IConfig } from '../config.interface';
 import { EmployeeEntity } from '../entity';
 import { Token } from '../token';

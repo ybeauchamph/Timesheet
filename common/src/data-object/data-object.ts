@@ -25,8 +25,8 @@ export class DataObject {
 
     static getProperties(dataObject: Object, group?: number): Array<DataObjectProperty> {
         let properties: Array<DataObjectProperty> = Reflect.getMetadata('properties', dataObject) || [];
-        if (group > 0) {
-            properties = properties.filter(p => (p.group & group) === group);
+        if (group !== undefined && group > 0) {
+            properties = properties.filter(p => p.group !== undefined && (p.group & group) === group);
         }
         return properties;
     }
@@ -38,13 +38,14 @@ export class DataObject {
     static hasProperties(dataObject: Object): boolean {
         return Reflect.hasMetadata('properties', dataObject);
     }
-
-    static clone<T extends Object>(dataObject: T): T {
-        if (dataObject) {
+    
+    static clone<T extends Object>(dataObject: T): T;
+    static clone<T extends Object>(dataObject: T | undefined): T | undefined {
+        if (!dataObject) {
+            return undefined;
+        } else {
             const typeHandler = DataObject.getTypeHandler(dataObject.constructor as EmptyConstructor<T>);
             return typeHandler.clone(dataObject);
-        } else {
-            return undefined;
         }
     }
 
@@ -54,13 +55,13 @@ export class DataObject {
         return dataObject;
     }
 
-    static from<T extends Object>(type: EmptyConstructor<T>, dto: any, group?: number): T {
-        if (dto) {
+    static from<T extends Object>(type: EmptyConstructor<T>, dto: any, group?: number): T | undefined {
+        if (!dto || !type) {
+            return undefined;
+        } else {
             const instance = new type();
             DataObject.set(instance, dto, group);
             return instance;
-        } else {
-            return undefined;
         }
     }
 

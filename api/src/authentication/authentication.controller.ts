@@ -10,13 +10,13 @@ export class AuthenticationController {
     constructor(
         private readonly authService: AuthenticationService,
         private readonly employeeService: EmployeeService,
-        private readonly cryptoService: CryptographyService
+        private readonly cryptographyService: CryptographyService
     ) { }
 
     @Post('')
-    public authenticate(@Body() authRequest: AuthenticationRequest) {
+    public authenticate(@Body() authRequest: AuthenticationRequest): Promise<AuthenticationResponse> {
         if (!authRequest) {
-            this.authenticationError(AuthenticationErrorCode.invalid_request);
+            return this.authenticationError(AuthenticationErrorCode.invalid_request);
         } else {
             switch (authRequest.grant_type) {
                 case 'password':
@@ -24,7 +24,7 @@ export class AuthenticationController {
                 case 'refresh_token':
                     throw new NotImplementedException();
                 default:
-                    this.authenticationError(AuthenticationErrorCode.unsupported_grant_type);
+                    return this.authenticationError(AuthenticationErrorCode.unsupported_grant_type);
             }
         }
     }
@@ -38,7 +38,7 @@ export class AuthenticationController {
                 return this.authenticationError(AuthenticationErrorCode.invalid_client);
             }
 
-            if (await this.cryptoService.verifyPassword(employee.password, password) === true) {
+            if (await this.cryptographyService.verifyPassword(employee.password, password) === true) {
                 const strToken = this.authService.createToken(employee);
                 return <AuthenticationResponse>{
                     TokenType: 'Bearer',

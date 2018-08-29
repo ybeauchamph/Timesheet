@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 
+import { Partial } from '@timesheet/common';
+
 import { EmployeeEntity } from '../entity';
 
 @Injectable()
@@ -18,6 +20,6 @@ export class EmployeeService {
     }
 
     getByEmail(email: string): Promise<EmployeeEntity | undefined> {
-        return this.employeeRepo.findOne({ email: email });
+        return this.employeeRepo.findOne(<Partial<EmployeeEntity>>{ email2: email });
     }
 }

@@ -2,7 +2,7 @@ import { TypeHandler } from '../type-handler';
 import { DataObject } from '../data-object';
 
 export class DataObjectTypeHandler implements TypeHandler<Object> {
-    clone(dataObject: any): Object {
+    clone(dataObject: any): Object | undefined {
         if (!dataObject) {
             return undefined;
         }
@@ -38,8 +38,8 @@ export class DataObjectTypeHandler implements TypeHandler<Object> {
         return clone;
     }
 
-    set(dataObject: any, dto: Object | any, group?: number) {
-        if (!dataObject) {
+    set(dataObject: any, dto: Object | any, group?: number): void {
+        if (!dataObject || !dto) {
             return;
         }
 

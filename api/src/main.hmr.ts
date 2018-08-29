@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigReader } from './config-reader';
+import { ConfigReader } from './config/config-reader';
 import { IConfig } from './config.interface';
 
 declare const module: any;

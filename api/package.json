@@ -23,6 +23,7 @@
     "@nestjs/typeorm": "^5.2.0",
     "@timesheet/common": "file:../common",
     "@timesheet/model": "file:../model",
+    "@types/passport-jwt": "^3.0.1",
     "argon2": "^0.19.3",
     "fastify-formbody": "^2.0.0",
     "jsonwebtoken": "^8.3.0",

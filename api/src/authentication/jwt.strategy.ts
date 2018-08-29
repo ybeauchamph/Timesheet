@@ -1,12 +1,13 @@
-import { Component, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
+import { use } from 'passport';
+import { Request } from 'express';
+
 import { AuthenticationService } from './authentication.service';
 import { IConfig } from '../config.interface';
 import { Token } from '../token';
-import { Request } from 'express';
-import { use } from 'passport';
 
-@Component()
+@Injectable()
 export class JwtStrategy extends Strategy {
     constructor(
         @Inject(Token.Config) private readonly config: IConfig,
@@ -16,7 +17,8 @@ export class JwtStrategy extends Strategy {
             {
                 jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
                 passReqToCallback: true,
-                secretOrKey: config.token.secretKey
+                secretOrKey: config.token.secretKey,
+                algorithms: [config.token.algorithm]
             },
             (req, payload, done) => this.verify(req, payload, done)
         );

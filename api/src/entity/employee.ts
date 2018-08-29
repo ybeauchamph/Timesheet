@@ -4,23 +4,23 @@ import { TimeDataEntity } from './time-data';
 @Entity('Employee')
 export class EmployeeEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ length: 254 })
-    email: string;
+    email!: string;
 
     @Column()
-    number: number;
+    number!: number;
 
     @Column({ length: 8 })
-    alias: string;
+    alias!: string;
 
     @Column({ length: 200 })
-    name: string;
+    name!: string;
 
     @Column({ length: 256 })
-    password: string;
+    password!: string;
 
     @OneToMany(() => TimeDataEntity, timeData => timeData.employee)
-    timeDatas: Array<TimeDataEntity>;
+    timeDatas: Array<TimeDataEntity> | undefined;
 }
